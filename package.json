@@ -1,0 +1,19 @@
+{
+  "name": "cancelable",
+  "version": "0.0.1",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel src -d lib",
+    "watch": "babel src -d lib -watch"
+  },
+  "author": "Asaf Katz",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.0"
+  },
+  "babel": {
+    "presets": ["env"]
+  }
+}
