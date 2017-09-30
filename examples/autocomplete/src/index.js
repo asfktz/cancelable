@@ -27,12 +27,20 @@ class App extends Component {
         isLoading: true
       });
 
-      const res = yield request('/api/songs', { q: term });
+      try {
+        const res = yield request('/api/songs', { q: term });
+        this.setState({
+          isLoading: false,
+          songs: res.data
+        });
 
-      this.setState({
-        isLoading: false,
-        songs: res.data
-      });
+      } catch (err) {
+        this.setState({
+          isLoading: false,
+          songs: [],
+          hasError: true
+        });
+      }
     }, this);
   }
 
@@ -41,9 +49,10 @@ class App extends Component {
   }
 
   render() {
-    const { isLoading, songs, value } = this.state;
+    const { isLoading, hasError, songs, value } = this.state;
     const { search } = this;
 
+    console.log(this.state);
     return (
       <div className="app">
         <input
@@ -52,19 +61,27 @@ class App extends Component {
           value={value}
           onChange={e => search(e.target.value)}
         />
+        {(() => {
+          if (hasError) {
+            return <div>Woops, we got an error.</div>;
+          }
 
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : (!songs.length && value) ? (
-          <div>No Results</div>
-        ) : (
-          <ul>
-            {}
-            {songs.map(({ title, id }) => {
-              return <li key={id}>{title}</li>;
-            })}
-          </ul>
-        )}
+          if (isLoading) {
+            return <div>Loading...</div>;
+          }
+
+          if (!songs.length && value !== '') {
+            return <div>No Results</div>;
+          }
+
+          return (
+            <ul>
+              {songs.map(({ title, id }) => {
+                return <li key={id}>{title}</li>;
+              })}
+            </ul>
+          );
+        })()}
       </div>
     );
   }
